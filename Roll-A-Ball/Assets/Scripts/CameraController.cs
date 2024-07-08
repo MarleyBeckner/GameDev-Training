@@ -23,6 +23,13 @@ public class Camera : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+         {
+        if (target != null)
+        {
+             transform.position = target.transform.position + posOffset; 
+        }
+       
+    }
         //Camera following obj using offset
         transform.position = target.transform.position + posOffset;
     }

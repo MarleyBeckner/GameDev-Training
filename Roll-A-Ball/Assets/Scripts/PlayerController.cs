@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
-
     public CharacterController controller; // var to hold the character movement componet 
     public float moveSpeed = 5f; //controls how character moves 
 
     public float rotateSpeed = 5f; //speed which character rotates 
     // Start is called before the first frame update
-    private Vector3 moveDirection = Vector3.zero;
+    //private Vector3 moveDirection = Vector3.zero;
+    public int health;
+    private Enemy enemy;
+
     void Start()
     {
         controller = GetComponent<CharacterController>(); //assigns the controller vat to the players char controller component 
+
+        enemy= FindObjectOfType<Enemy>();
     }
 
     // Update is called once per frame
@@ -34,10 +37,28 @@ public class PlayerController : MonoBehaviour
         if (movement != Vector3.zero) // if player moving 
         {
             //rotate player in the direction
-            Quaternion targetRotation= Quaternion.LookRotation(movement);
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
         }
         
     }
+    void OnTriggerEnter(Collider Other)
+   {
+        if(Other.CompareTag("enemy"))
+        {
+            //trigger the damage
+            health = health - enemy.damage;
+
+
+            if(health <= 0)
+            {
+                GameManager.Instance.EndGame();
+
+                Destroy(gameObject);
+            }
+            AudioManager.Instance.PlaySound("Death");
+        }
+   }
+
     
 }
